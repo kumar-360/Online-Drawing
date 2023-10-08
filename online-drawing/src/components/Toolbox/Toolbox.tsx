@@ -1,4 +1,5 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     ColorBox,
     Heading,
@@ -6,36 +7,101 @@ import {
     ToolItem,
     ToolboxContainer,
 } from "./Toolbox.style";
-import { COLORS } from "@/constants";
+import { COLORS, MENU_ITEMS } from "@/constants";
+import { MenuState } from "@/interfaces";
+import { changeBrushSize, changeColor } from "@/slice/toolboxSlice";
 
 const Toolbox = () => {
-    const updateBrushSize = useCallback((e) => {}, []);
+    const dispatch = useDispatch();
+    const activeMenuItem = useSelector(
+        (state: MenuState) => state.menu.activeMenuItem
+    );
+
+    const { color, size } = useSelector(
+        (state: any) => state.toolbox[activeMenuItem]
+    );
+
+    const updateBrushSize = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            dispatch(
+                changeBrushSize({ item: activeMenuItem, size: e.target.value })
+            );
+        },
+        [dispatch, activeMenuItem]
+    );
+
+    const updateColor = useCallback(
+        (e: React.MouseEvent<HTMLElement>) => {
+            dispatch(
+                changeColor({
+                    item: activeMenuItem,
+                    color: (e.target as HTMLInputElement).getAttribute("color"),
+                })
+            );
+        },
+        [dispatch, activeMenuItem]
+    );
+
+    const showStrokeTooltipOption = useMemo(
+        () => activeMenuItem === MENU_ITEMS.PENCIL,
+        [activeMenuItem]
+    );
+
+    const showBrushTooltipOption = useMemo(
+        () =>
+            activeMenuItem === MENU_ITEMS.PENCIL ||
+            activeMenuItem === MENU_ITEMS.ERASER,
+        [activeMenuItem]
+    );
 
     return (
         <ToolboxContainer>
-            <ToolItem>
-                <Heading>Stroke Color</Heading>
-                <ItemContainer>
-                    <ColorBox color={COLORS.BLACK} active={false} />
-                    <ColorBox color={COLORS.RED} active={false} />
-                    <ColorBox color={COLORS.GREEN} active={false} />
-                    <ColorBox color={COLORS.BLUE} active={false} />
-                    <ColorBox color={COLORS.ORANGE} active={false} />
-                    <ColorBox color={COLORS.YELLOW} active={false} />
-                </ItemContainer>
-            </ToolItem>
+            {showStrokeTooltipOption && (
+                <ToolItem>
+                    <Heading>Stroke Color</Heading>
+                    <ItemContainer onClick={updateColor}>
+                        <ColorBox
+                            color={COLORS.BLACK}
+                            active={color === COLORS.BLACK}
+                        />
+                        <ColorBox
+                            color={COLORS.RED}
+                            active={color === COLORS.RED}
+                        />
+                        <ColorBox
+                            color={COLORS.GREEN}
+                            active={color === COLORS.GREEN}
+                        />
+                        <ColorBox
+                            color={COLORS.BLUE}
+                            active={color === COLORS.BLUE}
+                        />
+                        <ColorBox
+                            color={COLORS.ORANGE}
+                            active={color === COLORS.ORANGE}
+                        />
+                        <ColorBox
+                            color={COLORS.YELLOW}
+                            active={color === COLORS.YELLOW}
+                        />
+                    </ItemContainer>
+                </ToolItem>
+            )}
 
-            <ToolItem>
-                <Heading>Brush Size</Heading>
-                <ItemContainer>
-                    <input
-                        type="range"
-                        min={1}
-                        max={10}
-                        onChange={updateBrushSize}
-                    />
-                </ItemContainer>
-            </ToolItem>
+            {showBrushTooltipOption && (
+                <ToolItem>
+                    <Heading>Brush Size</Heading>
+                    <ItemContainer>
+                        <input
+                            type="range"
+                            min={1}
+                            max={10}
+                            value={size}
+                            onChange={updateBrushSize}
+                        />
+                    </ItemContainer>
+                </ToolItem>
+            )}
         </ToolboxContainer>
     );
 };
