@@ -163,7 +163,9 @@ const Board = () => {
         changeConfig(color, size);
         socket.on("changeConfig", handleConfigChange);
 
-        return () => socket.off("changeConfig", handleConfigChange);
+        return () => {
+            socket.off("changeConfig", handleConfigChange);
+        };
     }, [color, size, activeMenuItem, dispatch]);
 
     return <canvas ref={canvasRef}></canvas>;
