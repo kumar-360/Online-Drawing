@@ -7,7 +7,7 @@ import {
     ToolItem,
     ToolboxContainer,
 } from "./Toolbox.style";
-import { COLORS, MENU_ITEMS } from "@/constants";
+import { BRUSH_SIZE, COLORS, MENU_ITEMS, STROKE_COLOR } from "@/constants";
 import { MenuState } from "@/interfaces";
 import { changeBrushSize, changeColor } from "@/slice/toolboxSlice";
 
@@ -58,7 +58,7 @@ const Toolbox = () => {
         <ToolboxContainer>
             {showStrokeTooltipOption && (
                 <ToolItem>
-                    <Heading>Stroke Color</Heading>
+                    <Heading>{STROKE_COLOR}</Heading>
                     <ItemContainer onClick={updateColor}>
                         <ColorBox
                             color={COLORS.BLACK}
@@ -90,7 +90,7 @@ const Toolbox = () => {
 
             {showBrushTooltipOption && (
                 <ToolItem>
-                    <Heading>Brush Size</Heading>
+                    <Heading>{BRUSH_SIZE}</Heading>
                     <ItemContainer>
                         <input
                             type="range"

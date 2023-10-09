@@ -28,3 +28,6 @@ export const MENU_ITEMS = {
     REDO: "REDO",
     DOWNLOAD: "DOWNLOAD",
 };
+
+export const STROKE_COLOR = "Stroke Color";
+export const BRUSH_SIZE = "Brish Size";

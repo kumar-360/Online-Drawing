@@ -16,6 +16,12 @@ export const ToolboxContainer = styled.div(({ theme }) => {
         border: `1px solid ${theme.colors.borderPrimary}`,
         boxShadow: `${theme.colors.shadowPrimary}`,
         backgroundColor: `${theme.colors.backgroundPrimary}`,
+
+        "@media (max-width: 1050px)": {
+            top: "120px",
+            left: "50%",
+            transform: "translateX(-50%)",
+        },
     };
 });
 

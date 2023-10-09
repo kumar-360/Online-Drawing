@@ -1,16 +1,53 @@
 import React, { memo, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MenuState } from "@/interfaces";
+import { MENU_ITEMS } from "@/constants";
+import { actionItemClick } from "@/slice/menuSlice";
 
 const Board = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const shouldDraw = useRef(false);
-    const activeMenuItem = useSelector(
-        (state: MenuState) => state.menu.activeMenuItem
+    const drawHistory = useRef<ImageData[] | undefined>([]);
+    const historyPointer = useRef(0);
+    const dispatch = useDispatch();
+    const { activeMenuItem, actionMenuItem } = useSelector(
+        (state: MenuState) => state.menu
     );
     const { color, size } = useSelector(
         (state: any) => state.toolbox[activeMenuItem]
     );
+
+    useEffect(() => {
+        if (!canvasRef.current) return;
+
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext("2d");
+
+        if (actionMenuItem === MENU_ITEMS.DOWNLOAD) {
+            const URL = canvas.toDataURL();
+
+            const anchor = document.createElement("a");
+            anchor.href = URL;
+            anchor.download = "online-draw.jpg";
+            anchor.click();
+        } else if (actionMenuItem === MENU_ITEMS.UNDO) {
+            if (historyPointer.current > 0) historyPointer.current--;
+
+            const imageData = drawHistory?.current?.[historyPointer.current];
+            context?.putImageData(imageData as ImageData, 0, 0);
+        } else if (actionMenuItem === MENU_ITEMS.REDO) {
+            if (
+                historyPointer.current <
+                (drawHistory?.current?.length as number) - 1
+            )
+                historyPointer.current++;
+
+            const imageData = drawHistory?.current?.[historyPointer.current];
+            context?.putImageData(imageData as ImageData, 0, 0);
+        }
+
+        dispatch(actionItemClick(null));
+    }, [actionMenuItem, dispatch]);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -32,6 +69,8 @@ const Board = () => {
         };
 
         const handleMouseDown = (e: MouseEvent) => {
+            if (e.button !== 0) return;
+
             shouldDraw.current = true;
             beginPath(e.clientX, e.clientY);
         };
@@ -40,8 +79,20 @@ const Board = () => {
 
             drawLine(e.clientX, e.clientY);
         };
-        const handleMouseUp = () => {
+        const handleMouseUp = (e: MouseEvent) => {
+            if (e.button !== 0 || e.button !== 0) return;
+
             shouldDraw.current = false;
+
+            const imageData = context?.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+            drawHistory?.current?.push(imageData as ImageData);
+            historyPointer.current =
+                (drawHistory?.current?.length as number) - 1;
         };
 
         canvas.addEventListener("mousedown", handleMouseDown);

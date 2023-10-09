@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Icon, IconContainer, MenuContainer } from "./Menu.style";
 import { MENU_ITEMS } from "@/constants";
-import { menuItemClick } from "@/slice/menuSlice";
+import { actionItemClick, menuItemClick } from "@/slice/menuSlice";
 import { MenuState } from "@/interfaces";
 
 const Menu = () => {
@@ -21,6 +21,13 @@ const Menu = () => {
     const handleMenuItemClick = useCallback(
         (itemName: string) => {
             dispatch(menuItemClick(itemName));
+        },
+        [dispatch]
+    );
+
+    const handleActionItemClick = useCallback(
+        (itemName: string) => {
+            dispatch(actionItemClick(itemName));
         },
         [dispatch]
     );
@@ -41,15 +48,24 @@ const Menu = () => {
                 <Icon icon={faEraser} />
             </IconContainer>
 
-            <IconContainer active={activeMenuItem === MENU_ITEMS.UNDO}>
+            <IconContainer
+                active={activeMenuItem === MENU_ITEMS.UNDO}
+                onClick={() => handleActionItemClick(MENU_ITEMS.UNDO)}
+            >
                 <Icon icon={faRotateLeft} />
             </IconContainer>
 
-            <IconContainer active={activeMenuItem === MENU_ITEMS.REDO}>
+            <IconContainer
+                active={activeMenuItem === MENU_ITEMS.REDO}
+                onClick={() => handleActionItemClick(MENU_ITEMS.REDO)}
+            >
                 <Icon icon={faRotateRight} />
             </IconContainer>
 
-            <IconContainer active={activeMenuItem === MENU_ITEMS.DOWNLOAD}>
+            <IconContainer
+                active={activeMenuItem === MENU_ITEMS.DOWNLOAD}
+                onClick={() => handleActionItemClick(MENU_ITEMS.DOWNLOAD)}
+            >
                 <Icon icon={faFileArrowDown} />
             </IconContainer>
         </MenuContainer>

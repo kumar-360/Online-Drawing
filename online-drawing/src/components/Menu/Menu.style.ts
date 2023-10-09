@@ -18,6 +18,10 @@ export const MenuContainer = styled.div(({ theme }) => ({
     border: `1px solid ${theme.colors.borderPrimary}`,
     boxShadow: theme.colors.shadowPrimary,
     backgroundColor: theme.colors.backgroundPrimary,
+
+    "@media (max-width: 1050px)": {
+        width: "260px",
+    },
 }));
 
 export const IconContainer = styled.div<IStyles>(({ theme, active }) => {
