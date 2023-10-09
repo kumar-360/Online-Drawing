@@ -30,4 +30,4 @@ export const MENU_ITEMS = {
 };
 
 export const STROKE_COLOR = "Stroke Color";
-export const BRUSH_SIZE = "Brish Size";
+export const BRUSH_SIZE = "Brush Size";
