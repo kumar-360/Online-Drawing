@@ -11,18 +11,28 @@ import { Icon, IconContainer, MenuContainer } from "./Menu.style";
 import { MENU_ITEMS } from "@/constants";
 import { actionItemClick, menuItemClick } from "@/slice/menuSlice";
 import { MenuState } from "@/interfaces";
+import { socket } from "@/socket";
 
 const Menu = () => {
     const dispatch = useDispatch();
     const activeMenuItem = useSelector(
         (state: MenuState) => state.menu.activeMenuItem
     );
+    const { color, size } = useSelector(
+        (state: any) => state.toolbox[activeMenuItem]
+    );
 
     const handleMenuItemClick = useCallback(
         (itemName: string) => {
             dispatch(menuItemClick(itemName));
+
+            socket.emit("changeConfig", {
+                activeMenuItem: itemName,
+                color,
+                size,
+            });
         },
-        [dispatch]
+        [dispatch, color, size]
     );
 
     const handleActionItemClick = useCallback(

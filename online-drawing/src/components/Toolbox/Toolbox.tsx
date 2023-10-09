@@ -10,6 +10,7 @@ import {
 import { BRUSH_SIZE, COLORS, MENU_ITEMS, STROKE_COLOR } from "@/constants";
 import { MenuState } from "@/interfaces";
 import { changeBrushSize, changeColor } from "@/slice/toolboxSlice";
+import { socket } from "@/socket";
 
 const Toolbox = () => {
     const dispatch = useDispatch();
@@ -26,8 +27,13 @@ const Toolbox = () => {
             dispatch(
                 changeBrushSize({ item: activeMenuItem, size: e.target.value })
             );
+            socket.emit("changeConfig", {
+                activeMenuItem,
+                color,
+                size: e.target.value,
+            });
         },
-        [dispatch, activeMenuItem]
+        [dispatch, activeMenuItem, color]
     );
 
     const updateColor = useCallback(
@@ -38,8 +44,13 @@ const Toolbox = () => {
                     color: (e.target as HTMLInputElement).getAttribute("color"),
                 })
             );
+            socket.emit("changeConfig", {
+                activeMenuItem,
+                color: (e.target as HTMLInputElement).getAttribute("color"),
+                size,
+            });
         },
-        [dispatch, activeMenuItem]
+        [dispatch, activeMenuItem, size]
     );
 
     const showStrokeTooltipOption = useMemo(
