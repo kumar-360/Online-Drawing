@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     faPencil,
@@ -22,17 +22,19 @@ const Menu = () => {
         (state: any) => state.toolbox[activeMenuItem]
     );
 
+    useEffect(() => {
+        socket.emit("changeConfig", {
+            activeMenuItem,
+            color: color,
+            size,
+        });
+    }, [color, size, activeMenuItem]);
+
     const handleMenuItemClick = useCallback(
         (itemName: string) => {
             dispatch(menuItemClick(itemName));
-
-            socket.emit("changeConfig", {
-                activeMenuItem: itemName,
-                color,
-                size,
-            });
         },
-        [dispatch, color, size]
+        [dispatch]
     );
 
     const handleActionItemClick = useCallback(
