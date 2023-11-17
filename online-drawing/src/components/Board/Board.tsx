@@ -36,7 +36,7 @@ const Board = () => {
             if (historyPointer.current > 0) historyPointer.current--;
 
             const imageData = drawHistory?.current?.[historyPointer.current];
-            context?.putImageData(imageData as ImageData, 0, 0);
+            imageData && context?.putImageData(imageData as ImageData, 0, 0);
         } else if (actionMenuItem === MENU_ITEMS.REDO) {
             if (
                 historyPointer.current <
@@ -45,7 +45,7 @@ const Board = () => {
                 historyPointer.current++;
 
             const imageData = drawHistory?.current?.[historyPointer.current];
-            context?.putImageData(imageData as ImageData, 0, 0);
+            imageData && context?.putImageData(imageData as ImageData, 0, 0);
         }
 
         dispatch(actionItemClick(null));
